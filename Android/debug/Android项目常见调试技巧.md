@@ -19,3 +19,13 @@ allprojects {
     }
 }
 ```
+
+
+三、gralde错误信息不够明显是怎么办
+例如下面的错误信息.
+Error:Executionfailedfortask':test:processDebugManifest'.>Manifest merger failed with multiple errors
+然后就没有然后了,没有任何详细信息.这种情况下,就需要使用trace命令打印错误栈了
+```
+/// processDebugManifest 是编译过程中错误的task名称
+gradlew processDebugManifest --stacktrace
+```
