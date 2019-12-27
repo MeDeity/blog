@@ -27,9 +27,9 @@ services:
 <!--在项目中指定使用私有仓库-->
 <repositories>
     <repository>
-        <id>nexus-ielong</id>
-        <name>ielong Nexus Repository</name>
-        <url>http://0.0.0.0:18081/repository/maven-public/</url>
+        <id>nexus-private</id>
+        <name>nexus-private</name>
+        <url>http://IP:8081/repository/maven-public/</url>
     </repository>
 </repositories>
 ```
@@ -41,10 +41,10 @@ services:
     
     <!--使用自己的私有镜像-->
     <mirror>
-        <id>nexus-ielong</id>
-        <name>nexus public group</name>
+        <id>nexus-private</id>
+        <name>nexus-private</name>
         <url>http://IP:8081/repository/maven-public/</url>
-        <mirrorof>*</mirrorof>
+        <mirrorOf>*</mirrorOf>
     </mirror>
 
 </mirrors>
@@ -81,12 +81,12 @@ services:
     <repository>
         <id>nexus-private</id>
         <name>nexus-private-releases</name>
-        <url>http://0.0.0.0:8081/repository/maven-releases/</url>
+        <url>http://IP:8081/repository/maven-releases/</url>
     </repository>
     <snapshotRepository>
         <id>nexus-private</id>
         <name>nexus-private-snapshots</name>
-        <url>http://0.0.0.0:8081/repository/maven-snapshots/</url>
+        <url>http://IP:8081/repository/maven-snapshots/</url>
         <uniqueVersion>false</uniqueVersion>
         <layout>legacy</layout>
     </snapshotRepository>
@@ -95,12 +95,37 @@ services:
 >其中repository.id指~/.m2/settings.xml中配置的server.id, 这两个是同一个概念，值要一致
 
 运行pom.xml所在目录 运行发布命令
+
+ ~~mvn clean deploy -Dmaven.test.skip=true~~
 ```
- mvn clean deploy -Dmaven.test.skip=true
+mvn jar:jar deploy:deploy
 ```
-以上尚未实践完毕
+>经试验使用`mvn jar:jar deploy:deploy`上传jar包成功, ~~mvn clean deploy -Dmaven.test.skip=true~~上传失败了,**目前尚不知道原因所在**
 
 参考链接:
 [Maven私有仓库-使用docker部署Nexus](https://www.cnblogs.com/fuhongwei041/p/7419450.html)
 
 
+关于swap交换区的配置
+```
+#进入一个文件夹
+cd /var
+#（创建4GB的swap ,一般是内存的两倍）
+dd if=/dev/zero of=swapfile bs=1024 count=4096000
+# 创建swap文件
+/sbin/mkswap swapfile
+# 激活swap文件
+/sbin/swapon swapfile
+# 检查swap是否正确
+/sbin/swapon -s 
+# 加到fstab文件中让系统引导时自动启动
+vim  /etc/fstab
+```
+在末尾增加以下内容：
+>/var/swapfile swap swap defaults 0 0
+```
+reboot
+free -m
+```
+
+[上传到私有仓库](https://stackoverflow.com/questions/6308162/maven-the-packaging-for-this-project-did-not-assign-a-file-to-the-build-artifac)
