@@ -44,3 +44,4 @@ RUN ./configure
 
 扩展链接
 1. [如果编写DockerFile文件](https://juejin.im/post/5a1bd8a36fb9a0450f21a966)
+2. [使用 Dockerfile 定制镜像](https://yeasy.gitbooks.io/docker_practice/image/build.html)
